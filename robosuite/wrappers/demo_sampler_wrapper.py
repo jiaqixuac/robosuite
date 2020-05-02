@@ -153,6 +153,12 @@ class DemoSamplerWrapper(Wrapper):
             if self.need_xml:
                 # reset the simulation from the model if necessary
                 state, xml = state
+                if 'tabletop' in xml:
+                    # by jqxu, compatible with RoboTurk data
+                    assert xml.count('tabletop') == 1, xml.count('tabletop')
+                    pos = xml.find('tabletop')
+                    assert xml[pos-1: pos+75] == '"tabletop" pos="1.5 0.10000000000000003 1.75" quat="0.653 0.271 0.271 0.653"', xml[pos-1: pos+75]
+                    xml = xml.replace('tabletop', 'agentview')
                 self.env.reset_from_xml_string(xml)
 
             if isinstance(state, tuple):
